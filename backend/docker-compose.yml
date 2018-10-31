@@ -10,22 +10,25 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - line-bot-db
+      - sqlite3
   
-  line-bot-db:
-    container_name: db_container
-    build: ./mysql_server
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      env_file: .env
-      TZ: Asia/Tokyo
-    volumes:
-      - mysql-data:/data/db
-    ports:
-      - 3306:3306
-    restart: always
-    tty: true
+  # line-bot-db:
+  #   container_name: db_container
+  #   build: ./mysql_server
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     env_file: .env
+  #     TZ: Asia/Tokyo
+  #   volumes:
+  #     - mysql-data:/data/db
+  #   ports:
+  #     - 3306:3306
+  #   restart: always
+  #   tty: true
 
-volumes:
-  mysql-data:
-    driver: local
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
