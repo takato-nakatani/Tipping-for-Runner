@@ -2,33 +2,30 @@ version: '3'
 
 services:
   line-bot-app:
-    tty: true
-    container_name: api_container
+    container_name: app_continer
     build: ./app_server
     volumes:
       - .:/app
     ports:
       - "80:80"
     depends_on:
-      - sqlite3
-  
-  # line-bot-db:
-  #   container_name: db_container
-  #   build: ./mysql_server
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: root
-  #     env_file: .env
-  #     TZ: Asia/Tokyo
-  #   volumes:
-  #     - mysql-data:/data/db
-  #   ports:
-  #     - 3306:3306
-  #   restart: always
-  #   tty: true
-
-  sqlite3:
-    image: nouchka/sqlite3:latest
-    stdin_open: true
+      - line-bot-postgres
     tty: true
+  
+  line-bot-postgres:
+    container_name: postgres_container
+    build: ./postgres_server
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: "line_api_user"
+      POSTGRES_PASSWORD: "line_api_pass"
+    ports:
+      - "5432:5432"
     volumes:
-      - ./db/:/root/db/
+      - ./postgres_server/sql/:/docker-entrypoint-initdb.d/
+      - pgdata:/var/lib/postgresql/data/
+    tty: true
+    restart: always
+
+volumes:
+    pgdata:
