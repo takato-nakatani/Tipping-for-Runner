@@ -1,0 +1,23 @@
+[mysqld]
+character_set_server = utf8mb4
+collation_server = utf8mb4_general_ci
+
+log_output = FILE
+general_log = 1
+log_queries_not_using_indexes = 1
+log_slow_admin_statements = 1
+log_syslog = 0
+log_timestamps = SYSTEM
+long_query_time = 3
+slow_query_log = 1
+
+general_log_file = general_query_all.log
+log_error = error.log
+slow_query_log_file = slow_query.log
+
+log_bin_trust_function_creators = 1
+
+[mysql]
+show-warnings
+
+prompt = "\u@\h [\d] > "
