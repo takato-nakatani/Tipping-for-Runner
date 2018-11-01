@@ -18,3 +18,14 @@
 #### DB等にどのランナーに対してどれだけの応援がされたかを保持。
 
 #### マラソンが終わったときにRUNNERにどれだけの応援がなされたか通知が行く。
+
+## 環境構築(sinatra + ActiveRecord)
+
+Rubyをインストール後、作業ディレクトリに移動し以下のコマンドを実行
+
+```
+$ cd src
+$ gem install bundler
+$ bundle without --production #Gemfileをもとに必要なgemをインストール
+```
+### ActiveRecordのモデルを作成する
