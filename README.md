@@ -84,5 +84,14 @@ require './models/test.rb'
 ```
 
 これでDBとの接続は完了する。
+ターミナルで以下のコマンドを叩くとテーブルが
+migrationファイルをもとに自動生成される
 
-
+```
+$ bundle exec rake db:migrate
+== 20181101082310 CreateTests: migrating ======================================
+-- create_table(:tests)
+DEPRECATION WARNING: `#timestamps` was called without specifying an option for `null`. In Rails 5, this behavior will change to `null: false`. You should manually specify `null: true` to prevent the behavior of your existing migrations from changing. (called from block in change at /Users/lab-admin/Tipping-for-Runner/backend/src/db/migrate/20181101082310_create_tests.rb:6)
+   -> 0.0011s
+== 20181101082310 CreateTests: migrated (0.0012s) =============================
+```
