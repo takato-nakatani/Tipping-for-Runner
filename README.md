@@ -29,3 +29,22 @@ $ gem install bundler
 $ bundle without --production #Gemfileをもとに必要なgemをインストール
 ```
 ### ActiveRecordのモデルを作成する
+## Rakefileの作成〜DBのマイグレーション
+
+rakefileの作成(作成済み)
+
+```
+require 'sinatra/activerecord'
+require 'sinatra/activerecord/rake'
+```
+
+これでrakeコマンドが使用可能になる
+
+ターミナルにて以下のコマンドを入力
+
+```
+$ bundle exec rake db:create_migration NAME=create_tests
+db/migrate/20181101082310_create_tests.rb
+```
+
+NAME=create_~~~には
