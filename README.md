@@ -41,10 +41,12 @@ require 'sinatra/activerecord/rake'
 これでrakeコマンドが使用可能になる
 
 ターミナルにて以下のコマンドを入力
+NAME=create_~~~にはテーブル名(複数形)を指定
 
 ```
 $ bundle exec rake db:create_migration NAME=create_tests
 db/migrate/20181101082310_create_tests.rb
 ```
 
-NAME=create_~~~には
+実行すると``db/migrate/20181101082310_create_tests.rb``のようなファイルが作成される
+
