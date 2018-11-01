@@ -50,3 +50,39 @@ db/migrate/20181101082310_create_tests.rb
 
 実行すると``db/migrate/20181101082310_create_tests.rb``のようなファイルが作成される
 
+作成されたファイルを以下のように編集
+string型のtitle, string型のcontentカラムが生成される
+テーブル名はtests
+
+```
+class CreateTests < ActiveRecord::Migration
+  def change
+    create_table :tests do |t|
+      t.string :title
+      t.string :content
+      t.timestamps
+    end
+  end
+end
+```
+
+``models/post.rb``というファイルを作って、以下のように書く。
+先ほどのテーブルがtestsなので、モデル名はTestと単数形になる
+
+```
+ActiveRecord::Base.establish_connection(ENV['DATABASE_URL']||"sqlite3:db/development.db")
+class Test < ActiveRecord::Base
+end
+```
+
+Rakefileも編集しておく。 models/test.rb を読み込んで、rakeコマンドでDBと接続できるようにする。
+
+```
+require 'sinatra/activerecord'
+require 'sinatra/activerecord/rake'
+require './models/test.rb'
+```
+
+これでDBとの接続は完了する。
+
+
