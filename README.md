@@ -95,17 +95,3 @@ DEPRECATION WARNING: `#timestamps` was called without specifying an option for `
    -> 0.0011s
 == 20181101082310 CreateTests: migrated (0.0012s) =============================
 ```
-
-
-
-## テーブル設計
-
-### marathon
-|:---:|:---:|
-|marathon_id|name|
-|int|varchar|
-
-### runner
-|:---:|:---:|
-|runner_id|name|
-|int|varchar|
