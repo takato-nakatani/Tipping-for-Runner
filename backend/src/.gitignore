@@ -3,3 +3,4 @@ vendor/bundle
 .ruby-version
 .DS_Store
 Gemfile.lock
+.env
