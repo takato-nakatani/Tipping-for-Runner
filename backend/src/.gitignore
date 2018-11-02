@@ -1,6 +1,5 @@
 .bundle/
 vendor/bundle
 .ruby-version
-*.db
 .DS_Store
 Gemfile.lock
