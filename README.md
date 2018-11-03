@@ -96,6 +96,42 @@ DEPRECATION WARNING: `#timestamps` was called without specifying an option for `
 == 20181101082310 CreateTests: migrated (0.0012s) =============================
 ```
 
+・bot友達追加時にrunner or audienceボタン
+・ランナーですとメッセージが来るとランナーdbにrunner_line_idが登録される
+・観客ですとメッセージが来ると観客dbにaudience_line_idが登録される
+・特定のidから特定のidにメッセージが送信される
+
+・エンドポイント作成
+
+・hostname
+tipping-for-runner
+
+共通操作
+・get /marathon
+マラソンの全情報を返す
+
+ランナー操作
+・post /runner/:id
+idは参加するマラソンのidを指定
+bodyにランナーのname,line_user_idを格納
+ランナーが出場するレースを選択し登録
+
+観客操作
+・post /runners/:id
+idはマラソンのidを指定
+指定したレースの参加ランナーを返す
+
+・post /line/push/:id
+idは指定したランナーのユーザーid
+観客は応援したいランナーを選択してシェイク
+bodyにシェイク回数、audience_line_idを格納
+返り値としてランナーに応援が通知される
+
+bot動作
+テキストで
+
+/linepay
+観客にシェイクした回数分のお金を決済するためのurlを送付
 ## DB設計
 
 ### marathon
