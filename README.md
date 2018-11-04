@@ -162,6 +162,24 @@ bodyにシェイク回数、audience_line_idを格納
 
 ### bot動作
 テキストで
+共通機能
+LINE Pay 認証
+LINE Pay 連動時に必要な認証情報は、以下のとおりです。
+• channel id
+• channel secret key
+すべて HTTP ヘッダーの情報として連携することになります。各 API の説明をご覧ください。
+Request Header
+項目 データタイプ 必須 説明
+Content-Type String Y application/json
+X-LINE-ChannelId String
+(10 Bytes)
+Y 決済連動情報 - Channel ID
+X-LINE-ChannelSecret String
+(32 Bytes)
+Y 決済連動情報 - Channel Secret Key
+X-LINE-MerchantDeviceType String
+(20 Bytes)
+N オフラインサポート- Device Type
 
 /linepay
 観客にシェイクした回数分のお金を決済するためのurlを送付
