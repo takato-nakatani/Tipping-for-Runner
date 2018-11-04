@@ -193,7 +193,8 @@ tipping-for-runner
     
     + Headers
 
-        `Accept: application/json`
+            Accept: application/json
+        
     
     + Attributes
         + number: 5 (integer, required) - シェイク回数
