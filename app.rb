@@ -30,16 +30,39 @@ post '/runner' do
     result = JSON.parse(body)
     Runner.create({
       name: result["name"],
-      number: resukt["number"],
-
+      number: result["number"],
+      marathon_id: result["marathon_id"]
+      runner_line_id: result["runner_line_id"]
     })
     status 201
   end
 end
 
 
-post '/runner/:marathonId' do
-  Rnner.where(params[:marathonId]).to_json
+get '/runner/:marathonId' do
+  Runner.where(params[:marathonId]).to_json
+end
+
+post '/line/push/:runnerId' do
+  runner = Runner.find(params[:runnerId])
+  body = request.body.read
+  if body == ''
+    status 400
+  else
+    result = JSON.parse(body)
+    Counts.create({
+      number: result[number],
+      runner_line_id: runner.runner_line_id
+      audience_line_id: result[audience_line_id],
+    })
+    message = "you're cheered by audience"
+    notification = {
+      type: "text",
+      text: message,
+    }
+    client.push_message(runner.runner_line_id, notification)
+    status 201
+  end
 end
 
 post '/callback' do
