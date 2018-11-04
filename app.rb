@@ -154,7 +154,7 @@ post '/callback' do
       when Line::Bot::Event::MessageType::Text
         text = event["message"]["text"]
         if text == "チョコレート"
-          data = callPostApi(reserve_ep)
+          data = callLinePayApi(reserve_ep)
           result = JSON.parse(data)
           message = {
             "type": "template",
