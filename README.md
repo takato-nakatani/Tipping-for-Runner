@@ -101,20 +101,53 @@ bot友達追加時にrunner or audienceボタン
 観客ですとメッセージが来ると観客dbにaudience_line_idが登録される
 特定のidから特定のidにメッセージが送信される
 
-## エンドポイント作成
+## API設計
 
 ### hostname
 tipping-for-runner
 
-### 共通操作
-・get /marathon
-マラソンの全情報を返す
+# Group ユーザ
+ 
+## ユーザのエンドポイント [/marathon]
+ 
+### マラソン情報取得 [GET]
+ 
+#### 処理概要
+ 
+* マラソンの情報を取得
+ 
++ Response 200 (application/json)
+ 
+    + Attributes
+        + id: 1 (integer, required) - id
+        + name: 大阪マラソン (string, required) - 名前
 
 ### ランナー操作
 ・post /runner/:id
-idは参加するマラソンのidを指定
+
+# Group　runner
+ 
+## runnerのエンドポイント [/runner]
+ 
+### runner登録 [POST]
+ 
+#### 処理概要
 bodyにランナーのname,line_user_idを格納
-ランナーが出場するレースを選択し登録
+* ランナーが出場するレースを選択し登録する
+* 登録に成功した場合、201を返す。
+ 
++ Request (application/json)
+ 
+    + Headers
+ 
+            Accept: application/json
+ 
+    + Attributes
+        + name: ベンチャー (string, required) -  名前
+        + number: 1 (string, required) -  ゼッケン番号
+        + marathon_id: 2 (string, required) -  マラソン番号
+        + line_user_id: fiohviojv (string, required) - ランナーのラインユーザーid
++ Response 201 (application/json)
 
 ### 観客操作
 ・post /runners/:id
@@ -133,6 +166,21 @@ bodyにシェイク回数、audience_line_idを格納
 /linepay
 観客にシェイクした回数分のお金を決済するためのurlを送付
 
+# Group ユーザ
+ 
+## ユーザのエンドポイント [/marathon]
+ 
+### マラソン情報取得 [GET]
+ 
+#### 処理概要
+ 
+* マラソンの情報を取得
+ 
++ Response 200 (application/json)
+ 
+    + Attributes
+        + id: 1 (integer, required) - id
+        + name: 大阪マラソン (string, required) - 名前
 
 ## DB設計
 
