@@ -31,18 +31,20 @@ post '/runner' do
     Runner.create({
       name: result["name"],
       number: result["number"],
+      marathon_id: result["marathon_id"]
+      runner_line_id: result["runner_line_id"]
     })
     status 201
   end
 end
 
 
-post '/runner/:marathonId' do
+get '/runner/:marathonId' do
   Runner.where(params[:marathonId]).to_json
 end
 
 post '/line/push/:runnerId' do
-  runners = Runner.where(params[:runnerId])
+  runner = Runner.find(params[:runnerId])
   body = request.body.read
   if body == ''
     status 400
