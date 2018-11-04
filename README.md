@@ -162,7 +162,7 @@ tipping-for-runner
 + Request (application/json)
  
     + Parameter
-        + marathonId: 2 - マラソン番号
+        + marathonId: 2 (integer, required) - マラソン番号
         
 + Response 200 (application/json)
  
@@ -189,7 +189,7 @@ tipping-for-runner
 + Request (application/json)
  
     + Parameter
-        + runnerId: 1 - ランナーのユーザid
+        + runnerId: 1(integer, required) - ランナーのユーザid
     
     + Headers
 
