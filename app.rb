@@ -1,9 +1,11 @@
 require 'bundler/setup'
 Bundler.require
 require 'sinatra'   # gem 'sinatra'
-require 'json'
 require 'line/bot'  # gem 'line-bot-api'
 require 'dotenv'
+require 'net/https'
+require 'uri'
+require 'json'
 require './models/marathon.rb'
 require './models/runner.rb'
 require './models/count.rb'
@@ -11,6 +13,82 @@ require './models/audience.rb'
 
 Dotenv.load
 
+reserve_ep = 'https://sandbox-api-pay.line.me/v2/payments/request'
+push_ep = 'https://api.line.me/v2/bot/message/push'
+
+# def callGetApi(endpoint)
+#   uri = URI.parse(endpoint)
+#   http = Net::HTTP.new(uri.host, uri.port)
+#
+#   http.use_ssl = true
+#   http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+#
+#   req = Net::HTTP::Get.new(uri.request_uri)
+#   req["Content-Type"] = "application/json"
+#   req["X-LINE-ChannelId"] = ENV["LINE_PAY_CHANNEL_ID"]
+#   req["X-LINE-ChannelSecret"] = ENV["LINE_PAY_CHANNEL_SECRET_KEY"]
+#   res = http.request(req)
+#   puts res.code, res.msg
+#   puts res.body
+#   p api_response = JSON.parse(res.body)
+# end
+
+# LINEPAYに支払い予約を行うAPIを叩く
+def callLinePayApi(endpoint)
+  uri = URI.parse(endpoint)
+  http = Net::HTTP.new(uri.host, uri.port)
+
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+  req = Net::HTTP::Post.new(uri.request_uri)
+  req["Content-Type"] = "application/json"
+  req["X-LINE-ChannelId"] = ENV["LINE_PAY_CHANNEL_ID"]
+  req["X-LINE-ChannelSecret"] = ENV["LINE_PAY_CHANNEL_SECRET_KEY"]
+
+  data = {
+    productName: "投げ銭",
+    amount: 1,
+    currency: "JPY",
+    orderId: 1,
+    confirmUrl: ENV["LINE_PAY_CONFIRM_URL"],
+    payType: "PREAPPROVED"
+  }.to_json
+
+  req.body = data
+  res = http.request(req)
+  res.body
+  # puts res.code, res.msg, res.body
+end
+
+# Botにプッシュ通知を実行させるAPIを叩く
+def callPushApi(endpoint)
+  uri = URI.parse(endpoint)
+  http = Net::HTTP.new(uri.host, uri.port)
+
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+  req = Net::HTTP::Post.new(uri.request_uri)
+  req["Content-Type"] = "application/json"
+  req["Authorization"] = "Bearer #{ENV["LINE_CHANNEL_TOKEN"]}"
+
+  data =
+  {
+    "to": "Uf3851702d78351c34d914308064c090c",
+    "messages":[
+        {
+            "type":"text",
+            "text":"you're cheered by audience"
+        }
+    ]
+  }.to_json
+
+  req.body = data
+  res = http.request(req)
+  puts res.code, res.msg, res.body
+end
+callPushApi(push_ep)
 def client
   @client ||= Line::Bot::Client.new { |config|
     config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
@@ -31,13 +109,12 @@ post '/runner' do
     Runner.create({
       name: result["name"],
       number: result["number"],
-      marathon_id: result["marathon_id"]
+      marathon_id: result["marathon_id"],
       runner_line_id: result["runner_line_id"]
     })
     status 201
   end
 end
-
 
 get '/runner/:marathonId' do
   Runner.where(params[:marathonId]).to_json
@@ -52,15 +129,10 @@ post '/line/push/:runnerId' do
     result = JSON.parse(body)
     Counts.create({
       number: result[number],
-      runner_line_id: runner.runner_line_id
-      audience_line_id: result[audience_line_id],
+      runner_line_id: runner.runner_line_id,
+      audience_line_id: result[audience_line_id]
     })
-    message = "you're cheered by audience"
-    notification = {
-      type: "text",
-      text: message,
-    }
-    client.push_message(runner.runner_line_id, notification)
+    callPushApi(push_ep)
     status 201
   end
 end
@@ -81,31 +153,25 @@ post '/callback' do
       case event.type
       when Line::Bot::Event::MessageType::Text
         text = event["message"]["text"]
-        if text == "登録"
+        if text == "チョコレート"
+          data = callPostApi(reserve_ep)
+          result = JSON.parse(data)
           message = {
             "type": "template",
-            "altText": "this is a confirm template",
+            "altText": "チョコレートを購入するには下記のボタンで決済に進んでください",
             "template": {
-                "type": "confirm",
-                "text": "Are you audience or runner?",
+                "type": "buttons",
+                "text": "チョコレートを購入するには下記のボタンで決済に進んでください?",
                 "actions": [
                     {
-                      "type": "message",
-                      "label": "audience",
-                      "text": "audience"
+                      "type": "uri",
+                      "label": "LINE Payで決済",
+                      "uri": result["info"]["paymentUrl"]["web"]
                     },
-                    {
-                      "type": "message",
-                      "label": "runner",
-                      "text": "runner"
-                    }
                 ]
             }
           }
           client.reply_message(event['replyToken'], message)
-        elsif text == "audience"
-          @user_id = event["source"]["userId"]
-          Audience.create(audience_line_id: @user_id)
         end
       end
     end
