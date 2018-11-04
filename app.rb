@@ -27,17 +27,19 @@ post '/runner' do
   if body == ''
     status 400
   else
-    resut = JSON.parse(body)
-    # Runner.create({
-    #   name: result[],
-    # })
+    result = JSON.parse(body)
+    Runner.create({
+      name: result["name"],
+      number: resukt["number"],
+
+    })
     status 201
   end
 end
 
 
-get '/runner' do
-
+post '/runner/:marathonId' do
+  Rnner.where(params[:marathonId]).to_json
 end
 
 post '/callback' do
@@ -80,7 +82,7 @@ post '/callback' do
           client.reply_message(event['replyToken'], message)
         elsif text == "audience"
           @user_id = event["source"]["userId"]
-          #Audience.create(audience_line_id: @user_id)
+          Audience.create(audience_line_id: @user_id)
         end
       end
     end
