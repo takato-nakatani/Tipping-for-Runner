@@ -144,10 +144,64 @@ tipping-for-runner
  
     + Attributes
         + name: ベンチャー (string, required) -  名前
-        + number: 1 (string, required) -  ゼッケン番号
-        + marathon_id: 2 (string, required) -  マラソン番号
+        + number: 1 (integer, required) -  ゼッケン番号
+        + marathon_id: 2 (integer, required) -  マラソン番号
         + line_user_id: fiohviojv (string, required) - ランナーのラインユーザーid
 + Response 201 (application/json)
+
+# Group　ユーザ
+ 
+## ユーザのエンドポイント [/runners/:marathonId]
+ 
+### 指定したmarathonのrunnerを返す [POST]
+ 
+#### 処理概要
+
+* 指定したレースの参加ランナーを返す
+ 
++ Request (application/json)
+ 
+    + Parameter
+        + marathonId: 2 - マラソン番号
+        
++ Response 200 (application/json)
+ 
+    + Attributes
+        + id: 1 (integer, required) - id
+        + name: ベンチャー (string, required) - ランナーの名前
+        + number: 1 (integer, required) - ゼッケン番号
+        + marathon_id: 2 (integer, required) - マラソン番号
+        + line_user_id: fiohviojv (string, required) - ランナーのラインユーザーid
+        
+# Group　ユーザ
+ 
+## ユーザのエンドポイント [/line/push/:runnerId]
+ 
+### 指定したrunnerに応援を送る [POST]
+ 
+#### 処理概要
+
+* idは指定したランナーのユーザーid
+* 観客は応援したいランナーを選択してシェイク
+* bodyにシェイク回数、audience_line_idを格納
+* 返り値としてランナーに応援が通知される
+ 
++ Request (application/json)
+ 
+    + Parameter
+        + runnerId: 1 - ランナーのユーザid
+    
+    + Headers
+
+        Accept: application/json
+    
+    + Attributes
+        + number: 5 (integer, required) - シェイク回数
+        + audience_line_id: fhwejvnvj (string, required) - 観客のラインユーザID
+        
++ Response 201 (application/json)
+ 
+
 
 ### 観客操作
 ・post /runners/:id
@@ -162,24 +216,6 @@ bodyにシェイク回数、audience_line_idを格納
 
 ### bot動作
 テキストで
-共通機能
-LINE Pay 認証
-LINE Pay 連動時に必要な認証情報は、以下のとおりです。
-• channel id
-• channel secret key
-すべて HTTP ヘッダーの情報として連携することになります。各 API の説明をご覧ください。
-Request Header
-項目 データタイプ 必須 説明
-Content-Type String Y application/json
-X-LINE-ChannelId String
-(10 Bytes)
-Y 決済連動情報 - Channel ID
-X-LINE-ChannelSecret String
-(32 Bytes)
-Y 決済連動情報 - Channel Secret Key
-X-LINE-MerchantDeviceType String
-(20 Bytes)
-N オフラインサポート- Device Type
 
 /linepay
 観客にシェイクした回数分のお金を決済するためのurlを送付
