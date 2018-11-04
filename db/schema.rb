@@ -11,11 +11,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181101082310) do
+ActiveRecord::Schema.define(version: 20181103234021) do
 
-  create_table "tests", force: :cascade do |t|
-    t.string   "title"
-    t.string   "content"
+  create_table "audiences", force: :cascade do |t|
+    t.string   "audience_line_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "counts", force: :cascade do |t|
+    t.integer  "number"
+    t.string   "runner_line_id"
+    t.string   "audience_line_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "marathons", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "runners", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "number"
+    t.integer  "marathon_id"
+    t.string   "runner_line_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
