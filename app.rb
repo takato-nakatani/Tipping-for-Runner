@@ -3,7 +3,7 @@ Bundler.require
 require 'sinatra'   # gem 'sinatra'
 require 'line/bot'  # gem 'line-bot-api'
 require 'dotenv'
-require 'net/https'
+require 'net/http'
 require 'uri'
 require 'json'
 require './models/marathon.rb'
@@ -36,7 +36,8 @@ push_ep = 'https://api.line.me/v2/bot/message/push'
 # LINEPAYに支払い予約を行うAPIを叩く
 def callLinePayApi(endpoint)
   uri = URI.parse(endpoint)
-  http = Net::HTTP.new(uri.host, uri.port)
+  proxy_class = Net::HTTP::Proxy(ENV["LINE_PAY_HOST_NAME"], 80)
+  http = proxy_class.new(uri.host, uri.port)
 
   http.use_ssl = true
   http.verify_mode = OpenSSL::SSL::VERIFY_NONE
