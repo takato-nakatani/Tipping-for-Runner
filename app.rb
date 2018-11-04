@@ -88,7 +88,7 @@ def callPushApi(endpoint)
   res = http.request(req)
   puts res.code, res.msg, res.body
 end
-callPushApi(push_ep)
+
 def client
   @client ||= Line::Bot::Client.new { |config|
     config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
