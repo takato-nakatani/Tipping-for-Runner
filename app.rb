@@ -35,8 +35,9 @@ push_ep = 'https://api.line.me/v2/bot/message/push'
 
 # LINEPAYに支払い予約を行うAPIを叩く
 def callLinePayApi(endpoint, count)
+  _, username, password, host, port = ENV["LINE_PAY_HOST_NAME"].gsub(/(:|\/|@)/,' ').squeeze(' ').split
   uri = URI.parse(endpoint)
-  http = Net::HTTP.new(uri.host, uri.port)
+  http = Net::HTTP.new(uri.host, uri.port, host, port, username, password)
 
   http.use_ssl = true
   http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -239,3 +240,5 @@ post '/callback' do
 
   "OK"
 end
+
+p callLinePayApi(reserve_ep, 5)
