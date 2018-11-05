@@ -80,6 +80,11 @@ def pushToRunner(endpoint, runner_line_id)
         {
             "type":"text",
             "text":"you're cheered by audience"
+        },
+        {
+            "type": "sticker",
+            "packageId": "2",
+            "stickerId": "166"
         }
     ]
   }.to_json
@@ -179,6 +184,19 @@ post '/line/push/:runnerId' do
   end
 end
 
+get '/pay/confirm' do
+  messages = [{
+            type: "sticker",
+            packageId: 2,
+            stickerId: 144
+        },{
+            type: "text",
+            text: "ありがとうございます、投げ銭の決済が完了しました。"
+        }]
+  client.push_message("Uf3851702d78351c34d914308064c090c", messages)
+  "ありがとうございます、投げ銭の決済が完了しました。"
+end
+
 post '/callback' do
   body = request.body.read
 
@@ -203,7 +221,7 @@ post '/callback' do
             "altText": "チョコレートを購入するには下記のボタンで決済に進んでください",
             "template": {
                 "type": "buttons",
-                "text": "チョコレートを購入するには下記のボタンで決済に進んでください?",
+                "text": "チョコレートを購入するには下記のボタンで決済に進んでください",
                 "actions": [
                     {
                       "type": "uri",
