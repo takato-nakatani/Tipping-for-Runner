@@ -61,3 +61,8 @@ def callPushApi(endpoint)
   res = http.request(req)
   puts res.code, res.msg, res.body
 end
+
+_, username, password, host, port = ENV["FIXIE_URL"].gsub(/(:|\/|@)/,' ').squeeze(' ').split
+uri       = URI("http://welcome.usefixie.com")
+request   = Net::HTTP.new(uri.host, uri.port, host, port, username, password)
+response  = request.get(uri)

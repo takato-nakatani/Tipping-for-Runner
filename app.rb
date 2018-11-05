@@ -171,16 +171,16 @@ post '/line/push/:runnerId' do
   else
     result = JSON.parse(body)
 
-    Counts.create({
-      number: result[number],
+    Count.create({
+      number: result["number"],
       runner_line_id: runner.runner_line_id,
-      audience_line_id: result[audience_line_id]
+      audience_line_id: result["audience_line_id"]
     })
 
     pushToRunner(push_ep, runner.runner_line_id)
-    data = callLinePayApi(reserve_ep, result[number])
+    data = callLinePayApi(reserve_ep, result["number"])
     res = JSON.parse(data)
-    pushToAudience(push_ep, result[audience_line_id], res["info"]["paymentUrl"]["web"])
+    pushToAudience(push_ep, result["audience_line_id"], res["info"]["paymentUrl"]["web"])
     status 201
   end
 end
@@ -239,9 +239,4 @@ post '/callback' do
   }
 
   "OK"
-end
-
-get '/' do
-  data = callLinePayApi(reserve_ep, 5)
-  p res = JSON.parse(data)
 end
