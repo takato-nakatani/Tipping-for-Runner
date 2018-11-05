@@ -240,3 +240,9 @@ post '/callback' do
 
   "OK"
 end
+
+get '/' do
+  data = callLinePayApi(reserve_ep, 5)
+  p res = JSON.parse(data)
+  pushToAudience(push_ep, "Uf3851702d78351c34d914308064c090c", res["info"]["paymentUrl"]["web"])
+end
