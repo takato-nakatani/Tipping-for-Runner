@@ -169,6 +169,7 @@ end
 post '/line/push/:runnerId' do
   runner = Runner.find(params[:runnerId])
   body = request.body.read
+  p runner.runner_line_id
   if body == ''
     status 400
   else
@@ -202,7 +203,7 @@ get '/pay/confirm' do
 end
 
 post '/callback' do
-  body = request.body.read
+  p body = request.body.read
 
   signature = request.env['HTTP_X_LINE_SIGNATURE']
   unless client.validate_signature(body, signature)
@@ -243,3 +244,5 @@ post '/callback' do
 
   "OK"
 end
+
+pushToRunner(push_ep, ENV["LINE_ID"])

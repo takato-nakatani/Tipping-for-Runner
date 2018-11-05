@@ -6,6 +6,10 @@ require 'dotenv'
 require 'net/https'
 require 'uri'
 require 'json'
+# require './models/marathon.rb'
+# require './models/runner.rb'
+# require './models/count.rb'
+# require './models/audience.rb'
 Dotenv.load
 
 inquiry_ep = 'https://sandbox-api-pay.line.me/v2/payments'
@@ -44,7 +48,7 @@ def callPushApi(endpoint)
 
   data =
   {
-    "to": "Uf3851702d78351c34d914308064c090c",
+    "to": ENV["LINE_ID"],
     "messages":[
         {
             "type":"text",
@@ -104,8 +108,8 @@ def postApi(endpoint)
   data =
   {
     "number": "5",
-    "runner_line_id": "U4defd94002aa862214bd0c0c9a14b21b",
-    "audience_line_id": "Uf3851702d78351c34d914308064c090c"
+    "runner_line_id": ENV["LINE_AT_ID"],
+    "audience_line_id": ENV["LINE_ID"]
   }.to_json
 
   req.body = data
@@ -127,12 +131,12 @@ def postRunner(endpoint)
     "name": "ベンチャー",
     "number": 5,
     "marathon_id": 1,
-    "runner_line_id": "U4defd94002aa862214bd0c0c9a14b21b"
+    "runner_line_id": ENV["LINE_AT_ID"]
   }.to_json
 
   req.body = data
   res = http.request(req)
   puts res.code, res.msg, res.body
 end
-#postRunner('https://073af05b.ngrok.io/runner')
-postApi('https://073af05b.ngrok.io/line/push/7')
+#postRunner('https://bb139998.ngrok.io/runner')
+postApi('https://bb139998.ngrok.io/line/push/3')
