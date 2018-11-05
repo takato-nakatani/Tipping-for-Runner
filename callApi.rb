@@ -104,8 +104,8 @@ def postApi(endpoint)
   data =
   {
     "number": "5",
-    "runner_line_id": "aaa",
-    "audience_line_id": "bbb"
+    "runner_line_id": "U4defd94002aa862214bd0c0c9a14b21b",
+    "audience_line_id": "Uf3851702d78351c34d914308064c090c"
   }.to_json
 
   req.body = data
@@ -113,4 +113,26 @@ def postApi(endpoint)
   puts res.code, res.msg, res.body
 end
 
-postApi('https://tipping-for-runner.herokuapp.com/line/push/1')
+def postRunner(endpoint)
+  uri = URI.parse(endpoint)
+  http = Net::HTTP.new(uri.host, uri.port)
+
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+  req = Net::HTTP::Post.new(uri.request_uri)
+
+  data =
+  {
+    "name": "ベンチャー",
+    "number": 5,
+    "marathon_id": 1,
+    "runner_line_id": "U4defd94002aa862214bd0c0c9a14b21b"
+  }.to_json
+
+  req.body = data
+  res = http.request(req)
+  puts res.code, res.msg, res.body
+end
+#postRunner('https://073af05b.ngrok.io/runner')
+postApi('https://073af05b.ngrok.io/line/push/7')
