@@ -34,10 +34,9 @@ push_ep = 'https://api.line.me/v2/bot/message/push'
 # end
 
 # LINEPAYに支払い予約を行うAPIを叩く
-def callLinePayApi(endpoint)
+def callLinePayApi(endpoint, count)
   uri = URI.parse(endpoint)
-  proxy_class = Net::HTTP::Proxy(ENV["LINE_PAY_HOST_NAME"], 80)
-  http = proxy_class.new(uri.host, uri.port)
+  http = Net::HTTP.new(uri.host, uri.port)
 
   http.use_ssl = true
   http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -49,7 +48,7 @@ def callLinePayApi(endpoint)
 
   data = {
     productName: "投げ銭",
-    amount: 1,
+    amount: count,
     currency: "JPY",
     orderId: 1,
     confirmUrl: ENV["LINE_PAY_CONFIRM_URL"],
@@ -63,7 +62,7 @@ def callLinePayApi(endpoint)
 end
 
 # Botにプッシュ通知を実行させるAPIを叩く
-def callPushApi(endpoint)
+def pushToRunner(endpoint, runner_line_id)
   uri = URI.parse(endpoint)
   http = Net::HTTP.new(uri.host, uri.port)
 
@@ -76,7 +75,7 @@ def callPushApi(endpoint)
 
   data =
   {
-    "to": "Uf3851702d78351c34d914308064c090c",
+    "to": runner_line_id,
     "messages":[
         {
             "type":"text",
@@ -89,6 +88,43 @@ def callPushApi(endpoint)
   res = http.request(req)
   puts res.code, res.msg, res.body
 end
+
+def pushToAudience(endpoint, audience_line_id, web_uri)
+  uri = URI.parse(endpoint)
+  http = Net::HTTP.new(uri.host, uri.port)
+
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+  req = Net::HTTP::Post.new(uri.request_uri)
+  req["Content-Type"] = "application/json"
+  req["Authorization"] = "Bearer #{ENV["LINE_CHANNEL_TOKEN"]}"
+
+  data =
+  {
+    "to": audience_line_id,
+    "messages":[{
+      "type": "template",
+      "altText": "投げ銭をするには下記のボタンで決済に進んでください",
+      "template": {
+          "type": "buttons",
+          "text": "投げ銭をするには下記のボタンで決済に進んでください?",
+          "actions": [
+              {
+                "type": "uri",
+                "label": "LINE Payで決済",
+                "uri": web_uri
+              },
+          ]
+      }
+    }]
+  }.to_json
+
+  req.body = data
+  res = http.request(req)
+  puts res.code, res.msg, res.body
+end
+
 
 def client
   @client ||= Line::Bot::Client.new { |config|
@@ -128,12 +164,17 @@ post '/line/push/:runnerId' do
     status 400
   else
     result = JSON.parse(body)
+
     Counts.create({
       number: result[number],
       runner_line_id: runner.runner_line_id,
       audience_line_id: result[audience_line_id]
     })
-    callPushApi(push_ep)
+
+    pushToRunner(push_ep, runner.runner_line_id)
+    data = callLinePayApi(reserve_ep, result[number])
+    res = JSON.parse(data)
+    pushToAudience(push_ep, result[audience_line_id], res["info"]["paymentUrl"]["web"])
     status 201
   end
 end
