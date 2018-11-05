@@ -52,7 +52,7 @@ def callLinePayApi(endpoint, count)
   }.to_json
 
   req.body = data
-  
+
   #proxyを設定
   _, username, password, host, port = ENV["LINE_PAY_HOST_NAME"].gsub(/(:|\/|@)/,' ').squeeze(' ').split
   http = Net::HTTP.new(uri.host, uri.port, host, port, username, password)
@@ -242,10 +242,4 @@ post '/callback' do
   }
 
   "OK"
-end
-
-get '/' do
-  data = callLinePayApi(reserve_ep, 5)
-  p res = JSON.parse(data)
-  pushToAudience(push_ep, "Uf3851702d78351c34d914308064c090c", res["info"]["paymentUrl"]["web"])
 end

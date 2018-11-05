@@ -91,3 +91,26 @@ def callLinePayApi(endpoint, count)
   res = http.request(req)
   res.body
 end
+
+def postApi(endpoint)
+  uri = URI.parse(endpoint)
+  http = Net::HTTP.new(uri.host, uri.port)
+
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+  req = Net::HTTP::Post.new(uri.request_uri)
+
+  data =
+  {
+    "number": "5",
+    "runner_line_id": "aaa",
+    "audience_line_id": "bbb"
+  }.to_json
+
+  req.body = data
+  res = http.request(req)
+  puts res.code, res.msg, res.body
+end
+
+postApi('https://tipping-for-runner.herokuapp.com/line/push/1')
