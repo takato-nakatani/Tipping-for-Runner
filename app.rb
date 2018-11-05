@@ -35,13 +35,8 @@ push_ep = 'https://api.line.me/v2/bot/message/push'
 
 # LINEPAYに支払い予約を行うAPIを叩く
 def callLinePayApi(endpoint, count)
-  _, username, password, host, port = ENV["LINE_PAY_HOST_NAME"].gsub(/(:|\/|@)/,' ').squeeze(' ').split
+
   uri = URI.parse(endpoint)
-  http = Net::HTTP.new(uri.host, uri.port, host, port, username, password)
-
-  http.use_ssl = true
-  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
   req = Net::HTTP::Post.new(uri.request_uri)
   req["Content-Type"] = "application/json"
   req["X-LINE-ChannelId"] = ENV["LINE_PAY_CHANNEL_ID"]
@@ -57,10 +52,18 @@ def callLinePayApi(endpoint, count)
   }.to_json
 
   req.body = data
+  
+  #proxyを設定
+  _, username, password, host, port = ENV["LINE_PAY_HOST_NAME"].gsub(/(:|\/|@)/,' ').squeeze(' ').split
+  http = Net::HTTP.new(uri.host, uri.port, host, port, username, password)
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+  #リクエスト送信
   res = http.request(req)
   res.body
-  # puts res.code, res.msg, res.body
 end
+
 
 # Botにプッシュ通知を実行させるAPIを叩く
 def pushToRunner(endpoint, runner_line_id)

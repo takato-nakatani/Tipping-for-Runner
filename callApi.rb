@@ -62,7 +62,32 @@ def callPushApi(endpoint)
   puts res.code, res.msg, res.body
 end
 
-_, username, password, host, port = ENV["FIXIE_URL"].gsub(/(:|\/|@)/,' ').squeeze(' ').split
-uri       = URI("http://welcome.usefixie.com")
-request   = Net::HTTP.new(uri.host, uri.port, host, port, username, password)
-response  = request.get(uri)
+def callLinePayApi(endpoint, count)
+
+  uri = URI.parse(endpoint)
+  req = Net::HTTP::Post.new(uri.request_uri)
+  req["Content-Type"] = "application/json"
+  req["X-LINE-ChannelId"] = ENV["LINE_PAY_CHANNEL_ID"]
+  req["X-LINE-ChannelSecret"] = ENV["LINE_PAY_CHANNEL_SECRET_KEY"]
+
+  data = {
+    productName: "投げ銭",
+    amount: count,
+    currency: "JPY",
+    orderId: 1,
+    confirmUrl: ENV["LINE_PAY_CONFIRM_URL"],
+    payType: "PREAPPROVED"
+  }.to_json
+
+  req.body = data
+  p req
+  #proxyを設定
+  _, username, password, host, port = ENV["LINE_PAY_HOST_NAME"].gsub(/(:|\/|@)/,' ').squeeze(' ').split
+  http = Net::HTTP.new(uri.host, uri.port, host, port, username, password)
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+  #リクエスト送信
+  res = http.request(req)
+  res.body
+end
