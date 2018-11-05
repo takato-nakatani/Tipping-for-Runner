@@ -241,4 +241,7 @@ post '/callback' do
   "OK"
 end
 
-p callLinePayApi(reserve_ep, 5)
+get '/' do
+  data = callLinePayApi(reserve_ep, 5)
+  p res = JSON.parse(data)
+end
