@@ -1,1 +1,5 @@
-backend/.env
+.bundle/
+vendor/bundle
+.ruby-version
+.DS_Store
+.env
