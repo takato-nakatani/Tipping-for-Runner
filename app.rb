@@ -52,7 +52,7 @@ def callLinePayApi(endpoint, count)
     amount: count,
     currency: "JPY",
     orderId: 1,
-    confirmUrl: ENV["LINE_PAY_CONFIRM_URL"],
+    confirmUrl: ENV["LINE_PAY_CONFIRM_URL_NGROK1"],
     payType: "PREAPPROVED"
   }.to_json
 
@@ -80,8 +80,8 @@ def pushToRunner(endpoint, runner_line_id)
 
   req = Net::HTTP::Post.new(uri.request_uri)
   req["Content-Type"] = "application/json"
-  req["Authorization"] = "Bearer #{ENV["LINE_CHANNEL_TOKEN"]}"
-
+  req["Authorization"] = "Bearer #{ENV['LINE_CHANNEL_TOKEN_TKT']}"
+  
   data =
   {
     "to": runner_line_id,
@@ -112,8 +112,7 @@ def pushToAudience(endpoint, audience_line_id, web_uri)
 
   req = Net::HTTP::Post.new(uri.request_uri)
   req["Content-Type"] = "application/json"
-  req["Authorization"] = "Bearer #{ENV["LINE_CHANNEL_TOKEN"]}"
-
+  req["Authorization"] = "Bearer #{ENV['LINE_CHANNEL_TOKEN_TKT']}"
   data =
   {
     "to": audience_line_id,
@@ -139,7 +138,6 @@ def pushToAudience(endpoint, audience_line_id, web_uri)
   puts res.code, res.msg, res.body
 end
 
-
 def client
   @client ||= Line::Bot::Client.new { |config|
     config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
@@ -147,10 +145,12 @@ def client
   }
 end
 
+# マラソン情報を取得するためのエンドポイント
 get '/marathon' do
   @marathons = Marathon.all.to_json
 end
 
+# ランナーが登録するときのPOSTリクエストのエンドポイント
 post '/runner' do
   body = request.body.read
   if body == ''
@@ -167,10 +167,12 @@ post '/runner' do
   end
 end
 
+# 観客がマラソンIDを指定した際にそのマラソンに出ているマラソンランナーを取得
 get '/runner/:marathonId' do
   Runner.where(params[:marathonId]).to_json
 end
 
+# ランナーを指定して、観客から応援を送るときのエンドポイント
 post '/line/push/:runnerId' do
   runner = Runner.find(params[:runnerId])
   body = request.body.read
@@ -193,6 +195,7 @@ post '/line/push/:runnerId' do
   end
 end
 
+# 決済完了の処理を行うエンドポイント
 get '/pay/confirm' do
   messages = [{
             type: "sticker",
@@ -202,10 +205,12 @@ get '/pay/confirm' do
             type: "text",
             text: "ありがとうございます、投げ銭の決済が完了しました。"
         }]
-  client.push_message("Uf3851702d78351c34d914308064c090c", messages)
+  # 下記コードを観客に送れるようにする。
+  # client.push_message(ENV["LINE_ID"], messages)
   "ありがとうございます、投げ銭の決済が完了しました。"
 end
 
+# ラインのwebhookに登録しているエンドポイント
 post '/callback' do
   body = request.body.read
 
