@@ -104,7 +104,7 @@ def postApi(endpoint)
   data =
   {
     "number": "5",
-    "runner_line_id": "U4defd94002aa862214bd0c0c9a14b21b",
+    "runner_line_id": ENV["LINE_ID"],
     "audience_line_id": "Uf3851702d78351c34d914308064c090c"
   }.to_json
 
@@ -124,10 +124,10 @@ def postRunner(endpoint)
 
   data =
   {
-    "name": "ベンチャー",
+    "name": "takato",
     "number": 5,
     "marathon_id": 1,
-    "runner_line_id": "U4defd94002aa862214bd0c0c9a14b21b"
+    "runner_line_id": ENV["LINE_ID"]
   }.to_json
 
   req.body = data
