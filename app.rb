@@ -14,8 +14,8 @@ require './models/audience.rb'
 
 Dotenv.load
 
-get '/aiueo' do
-  erb :index
+get '/' do
+  request.host
 end
 
 reserve_ep = 'https://sandbox-api-pay.line.me/v2/payments/request'
@@ -43,6 +43,7 @@ def callLinePayApi(endpoint, count)
 
   uri = URI.parse(endpoint)
   req = Net::HTTP::Post.new(uri.request_uri)
+  line_pay_confirm_url = 'https://' + request.host + '/pay/confirm'
   req["Content-Type"] = "application/json"
   req["X-LINE-ChannelId"] = ENV["LINE_PAY_CHANNEL_ID"]
   req["X-LINE-ChannelSecret"] = ENV["LINE_PAY_CHANNEL_SECRET_KEY"]
@@ -52,7 +53,7 @@ def callLinePayApi(endpoint, count)
     amount: count,
     currency: "JPY",
     orderId: 1,
-    confirmUrl: ENV["LINE_PAY_CONFIRM_URL_NGROK1"],
+    confirmUrl: line_pay_confirm_url,
     payType: "PREAPPROVED"
   }.to_json
 
