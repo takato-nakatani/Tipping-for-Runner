@@ -6,10 +6,12 @@ require 'dotenv'
 require 'net/https'
 require 'uri'
 require 'json'
+
 # require './models/marathon.rb'
 # require './models/runner.rb'
 # require './models/count.rb'
 # require './models/audience.rb'
+
 Dotenv.load
 
 inquiry_ep = 'https://sandbox-api-pay.line.me/v2/payments'
@@ -138,5 +140,6 @@ def postRunner(endpoint)
   res = http.request(req)
   puts res.code, res.msg, res.body
 end
+
 #postRunner('https://bb139998.ngrok.io/runner')
 postApi('https://bb139998.ngrok.io/line/push/3')
