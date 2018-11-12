@@ -1,4 +1,5 @@
-ActiveRecord::Base.establish_connection(ENV['DATABASE_URL']||"sqlite3:db/development.db")
+ActiveRecord::Base.configurations = YAML.load_file('database.yml')
+ActiveRecord::Base.establish_connection(:development)
 class Runner < ActiveRecord::Base
   belongs_to :marathon
 end

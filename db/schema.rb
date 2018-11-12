@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20181103234021) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "audiences", force: :cascade do |t|
     t.string   "audience_line_id"
     t.datetime "created_at"
@@ -41,5 +44,5 @@ ActiveRecord::Schema.define(version: 20181103234021) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-  
+
 end
