@@ -39,11 +39,11 @@ def callLinePayApi(endpoint, count)
 
   uri = URI.parse(endpoint)
   req = Net::HTTP::Post.new(uri.request_uri)
-  line_pay_confirm_url = 'https://' + request.host + '/pay/confirm'
+  line_pay_confirm_url = 'http://' + request.host + '/pay/confirm'
 
   req["Content-Type"] = "application/json"
-  req["X-LINE-ChannelId"] = ENV["LINE_PAY_CHANNEL_ID"]
-  req["X-LINE-ChannelSecret"] = ENV["LINE_PAY_CHANNEL_SECRET_KEY"]
+  req["X-LINE-ChannelId"] = ENV["LINE_PAY_CHANNEL_ID_TKT"]
+  req["X-LINE-ChannelSecret"] = ENV["LINE_PAY_CHANNEL_SECRET_KEY_TKT"]
 
   data = {
     productName: "投げ銭",
@@ -57,7 +57,7 @@ def callLinePayApi(endpoint, count)
   req.body = data
 
   #proxyを設定
-  _, username, password, host, port = ENV["LINE_PAY_HOST_NAME"].gsub(/(:|\/|@)/,' ').squeeze(' ').split
+  _, username, password, host, port = ENV["LINE_PAY_HOST_NAME_TKT3"].gsub(/(:|\/|@)/,' ').squeeze(' ').split
   http = Net::HTTP.new(uri.host, uri.port, host, port, username, password)
   http.use_ssl = true
   http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -138,8 +138,8 @@ end
 
 def client
   @client ||= Line::Bot::Client.new { |config|
-    config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
-    config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
+    config.channel_secret = ENV["LINE_CHANNEL_SECRET_TKT"]
+    config.channel_token = ENV["LINE_CHANNEL_TOKEN_TKT"]
   }
 end
 
@@ -171,7 +171,7 @@ end
 
 # 観客がマラソンIDを指定した際にそのマラソンに出ているマラソンランナーを取得
 get '/runner/:marathonId' do
-  Runner.where(params[:marathonId]).to_json
+  Runner.where(marathon_id: params[:marathonId]).to_json
 end
 
 

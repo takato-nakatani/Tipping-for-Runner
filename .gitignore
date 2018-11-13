@@ -1,5 +1,12 @@
-.bundle/
-vendor/bundle
-.ruby-version
-.DS_Store
 .env
+
+app/.bundle/
+app/vendor/bundle
+app/.ruby-version
+app/.DS_Store
+app/database.yml
+app/db
+app/.env
+app/models
+
+postgresql/work

@@ -2,19 +2,32 @@ version: '3'
 
 services:
   line-bot-app:
-    tty: true
     container_name: api_container
-    build: .
+    build: 
+      context: ./app
     volumes:
-      - .:/app
+      - ./app:/app
     ports:
       - "80:80"
+    environment:
+      env_file: .env
     depends_on:
-      - sqlite3
-
-  sqlite3:
-    image: nouchka/sqlite3:latest
-    stdin_open: true
+      - line-bot-pgsql
     tty: true
+
+  line-bot-pgsql:
+    container_name: postgres_container
+    build: 
+      context: ./postgresql
+    environment:
+      PGDATA: /var/lib/postgresql/data/postgres-tipping
     volumes:
-      - ./db/:/root/db/
+      - ./postgresql/work:/docker-entrypoint-initdb.d
+      - runtip-data/:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    tty: true
+    restart: always    
+
+volumes:
+  runtip-data:
