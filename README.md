@@ -143,10 +143,13 @@ tipping-for-runner
             Accept: application/json
  
     + Attributes
-        + name: ベンチャー (string, required) -  名前
-        + number: 1 (integer, required) -  ゼッケン番号
-        + marathon_id: 2 (integer, required) -  マラソン番号
-        + line_user_id: fiohviojv (string, required) - ランナーのラインユーザーid
+        + maker_name: Apple, Samsung (string, required) -  メーカー名
+        + category: iPhone X (string, required) - 機種名
+        + data_capacity: 128 (integer, required) - データ容量 
+        + date: 2018-12-28 (DATE, required) - 発売日
+        + os_version:　(string, required) - OSバージョン
+        + color: red (string, required) - 色
+        + price: 98000 (integer, required) - 販売価格
 + Response 201 (application/json)
 
 # Group　ユーザ
