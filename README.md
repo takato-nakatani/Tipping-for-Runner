@@ -147,7 +147,7 @@ tipping-for-runner
         + category: iPhone X (string, required) - 機種名
         + data_capacity: 128 (integer, required) - データ容量 
         + date: 2018-12-28 (DATE, required) - 発売日
-        + os_version:　(string, required) - OSバージョン
+        + os_version:　10.0.1 (string, required) - OSバージョン
         + color: red (string, required) - 色
         + price: 98000 (integer, required) - 販売価格
 + Response 201 (application/json)
